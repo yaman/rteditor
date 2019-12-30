@@ -108,8 +108,8 @@ task sourceJar(type: Jar) {
 
 publishing {
     publications {
-        bar(MavenPublication) {
-            groupId 'com.onegravity'
+        rteditor(MavenPublication) {
+            groupId 'com.github.yaman'
             artifactId 'rteditor'
             version '0.0.1'
             artifact(sourceJar)
