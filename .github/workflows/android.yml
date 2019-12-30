@@ -15,10 +15,8 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Print all sub-directories
-      run: ls -R build/
     - name: Publish to oss sonatype snapshot
-      run: SONATYPE_USERNAME=${{ secrets.SONATYPE_USERNAME }} SONATYPE_PASSWORD=${{ secrets.SONATYPE_PASSWORD }} ./gradlew publish
+      run: ./gradlew publish
       env:
         SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
         SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
