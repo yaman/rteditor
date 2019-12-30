@@ -111,14 +111,19 @@ publishing {
         rteditor(MavenPublication) {
             groupId 'com.github.yaman'
             artifactId 'rteditor'
-            version '0.0.1'
+            version '0.0.1-SNAPSHOT'
             artifact(sourceJar)
             artifact("$buildDir/outputs/aar/RTEditor-release.aar")
         }
     }
     repositories {
         maven {
-            url "$buildDir/repo"
+            //url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+            credentials {
+                username "$System.env.SONATYPE_USERNAME"
+                password "$System.env.SONATYPE_PASSWORD"
+            }
         }
     }
 }
