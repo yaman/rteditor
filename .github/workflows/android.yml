@@ -15,8 +15,9 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Publish to maven central 
-      run: ./gradlew publish
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/outputs/aar/RTEditor-release.aar
       env:
-        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

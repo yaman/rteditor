@@ -21,6 +21,7 @@ buildscript {
         mavenCentral()
         mavenLocal()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://jitpack.io" }
     }
     dependencies {
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
@@ -46,6 +47,7 @@ allprojects {
         mavenCentral()
         mavenLocal()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://jitpack.io' }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url "https://maven.google.com" }
         google()
@@ -94,74 +96,24 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.collection:collection:1.0.0'
-    implementation 'com.1gravity:android-colorpicker:2.0.3'
+    compile 'com.1gravity:android-colorpicker:2.0.3'
 }
 
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
+apply plugin: 'com.github.dcendents.android-maven' 
 
 group='com.github.yaman'
 
 
-signing {
-    def signingKeyId = "$System.env.GPG_KEY_ID"
-    def signingKey = "$System.env.GPG_KEY"
-    def signingPassword = "$System.env.GPG_KEY_PASSWORD"
-    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
-    sign configurations.archives
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
 }
 
-task sourceJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier "sources"
+task classesJar(type: Jar) {
+    from "$buildDir/intermediates/classes/release"
 }
 
-publishing {
-    publications {
-      mavenJava(MavenPublication) {
-            groupId 'com.github.yaman'
-            artifactId 'rteditor'
-            version '0.0.1'
-            artifact(sourceJar)
-            artifact("$buildDir/outputs/aar/RTEditor-release.aar")
-            project.tasks.signArchives.signatureFiles.each {
-              artifact(it) {
-                def matcher = it.file =~ /-(sources|javadoc)\.jar\.asc$/
-                if (matcher.find()) {
-                  classifier = matcher.group(1)
-                } else {
-                  classifier = null
-                }
-                extension = 'jar.asc'
-              }
-            }
-            pom.withXml {
-              def pomFile = file("${project.buildDir}/generated-pom.xml")
-              writeTo(pomFile)
-              def pomAscFile = signing.sign(pomFile).signatureFiles[0]
-              artifact(pomAscFile) {
-                classifier = null
-                extension = 'pom.asc'
-              }
-            }
-        }
-    }
-    repositories {
-        maven {
-            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-            credentials {
-                username "$System.env.SONATYPE_USERNAME"
-                password "$System.env.SONATYPE_PASSWORD"
-            }
-        }
-    }
-}
-
-model {
-    tasks.publishMavenJavaPublicationToMavenLocal {
-        dependsOn project.tasks.signArchives
-    }
-    tasks.publishMavenJavaPublicationToMavenRepository {
-        dependsOn project.tasks.signArchives
-    }
+artifacts {
+    archives classesJar
+    archives sourcesJar
 }
