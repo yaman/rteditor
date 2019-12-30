@@ -113,7 +113,7 @@ publishing {
             artifactId 'rteditor'
             version '0.0.1-SNAPSHOT'
             artifact(sourceJar)
-            artifact("$buildDir/outputs/aar/RTEditor-release.aar")
+            artifact("$buildDir/outputs/aar/rteditor-release.aar")
         }
     }
     repositories {
